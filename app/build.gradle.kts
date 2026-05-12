@@ -5,11 +5,7 @@ plugins {
 
 android {
     namespace = "com.nenykely.catalog_jeux"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.nenykely.catalog_jeux"
@@ -59,6 +55,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     // Navigation Compose ( optionnel )
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.coil.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))

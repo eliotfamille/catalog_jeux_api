@@ -11,10 +11,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.nenykely.catalog_jeux.ui.LivreDetailScreen
-import com.nenykely.catalog_jeux.ui.LivreListScreen
+import com.nenykely.catalog_jeux.ui.JeuAddScreen
+import com.nenykely.catalog_jeux.ui.JeuDetailScreen
+import com.nenykely.catalog_jeux.ui.JeuListScreen
 import com.nenykely.catalog_jeux.ui.theme.Catalog_jeuxTheme
-import com.nenykely.catalog_jeux.viewmodel.LivreViewModel
+import com.nenykely.catalog_jeux.viewmodel.JeuViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,23 +32,32 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    val viewModel: LivreViewModel = viewModel()
+    val viewModel: JeuViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = "liste") {
         composable("liste") {
-            LivreListScreen(
+            JeuListScreen(
                 viewModel = viewModel,
-                onLivreClick = { livre ->
-                    viewModel.selectLivre(livre)
+                onJeuClick = { jeu ->
+                    viewModel.selectJeu(jeu)
                     navController.navigate("detail")
+                },
+                onAddClick = {
+                    navController.navigate("ajouter")
                 }
             )
         }
+        composable("ajouter") {
+            JeuAddScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
         composable("detail") {
-            val selectedLivre by viewModel.selectedLivre.collectAsState()
-            selectedLivre?.let { livre ->
-                LivreDetailScreen(
-                    livre = livre,
+            val selectedJeu by viewModel.selectedJeu.collectAsState()
+            selectedJeu?.let { jeu ->
+                JeuDetailScreen(
+                    jeu = jeu,
                     onBack = { navController.popBackStack() }
                 )
             }
