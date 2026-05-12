@@ -57,6 +57,9 @@ class JeuViewModel : ViewModel() {
         _selectedCategory.value = category
     }
 
+    private val _isOffline = MutableStateFlow(false)
+    val isOffline: StateFlow<Boolean> = _isOffline
+
     fun fetchJeux() {
         viewModelScope.launch {
             _loading.value = true
@@ -64,14 +67,13 @@ class JeuViewModel : ViewModel() {
                 val response = RetrofitInstance.api.getJeux()
                 if (response.isSuccessful) {
                     val list = response.body() ?: emptyList()
-                    Log.d("JeuViewModel", "Récupéré ${list.size} jeux")
                     _allJeux.value = list
+                    _isOffline.value = false // Connecté
                 } else {
-                    val errorMsg = response.errorBody()?.string() ?: "Erreur inconnue"
-                    Log.e("JeuViewModel", "Erreur API (${response.code()}): $errorMsg")
+                    _isOffline.value = true
                 }
             } catch (e: Exception) {
-                Log.e("JeuViewModel", "Crash réseau: ${e.message}")
+                _isOffline.value = true // Erreur réseau (serveur éteint par ex)
             } finally {
                 _loading.value = false
             }
